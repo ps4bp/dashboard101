@@ -1,0 +1,118 @@
+/* Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    /* background-color: #f9f9f9; */
+}
+
+/* Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto repeat(5, 1fr);
+    gap: 2px;
+    padding: 2px;
+}
+
+.hq-clock-container {
+    /* position: relative; */
+    /* display: inline-flex; */
+    justify-content: center;
+    align-items: center;
+    min-height: 240px;
+}
+
+#melbourneClock {
+    /*    
+    width: 260px;
+    height: 260px;
+    */
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(0,0,0,.15), inset 0 0 15px rgba(0,0,0,.08);
+}
+
+/*.hq-clock-overlay {
+    position: absolute;
+    bottom: 12px;
+    text-align: center;
+    width: 100%;
+}
+*/
+.hq-city {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2f3b52;
+}
+
+.hq-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 4px;
+    text-align: center;
+}
+
+
+.cell-hq {
+    /* Span 5 rows, 1 column */
+    grid-area: 2 / 1 / 6 / 2;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center; /* horizontal center */
+    align-items: center; /* vertical center */
+    align-self: start; /* don't stretch within grid */
+    padding: 20px;
+    height: fit-content;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header,
+.city-cell {
+    background-color: #f0f0f0;
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    border-bottom: 2px solid #999;
+    font-weight: bold;
+    font-size: 1.2em;
+    /* text-transform: uppercase; */
+}
+
+/* City Cell Styles */
+.city-cell {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* One column for city */
+    grid-template-rows: auto 1fr;
+    /* Two rows: one for city, one for time */
+    gap: 5px;
+    /* Optional: space between city and time */
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.city {
+    font-weight: bold;
+    grid-row: 1;
+    /* Specify that city goes in the first row */
+}
+
+.time {
+    font-family: monospace;
+    font-size: 1.1em;
+    grid-row: 2;
+    /* Specify that time goes in the second row */
+}
