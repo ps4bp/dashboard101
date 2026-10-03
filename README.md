@@ -1,2 +1,3 @@
 # dashboard101
-Demo Dashboard
+Demo Dashboard:
+- minimalist analog clock

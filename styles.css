@@ -15,62 +15,27 @@ body {
 .grid-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: auto repeat(5, 1fr);
+    grid-template-rows: auto repeat(6, 1fr);
     gap: 2px;
     padding: 2px;
 }
 
-.hq-clock-container {
-    /* position: relative; */
-    /* display: inline-flex; */
-    justify-content: center;
-    align-items: center;
-    min-height: 240px;
-}
+/* Cell Styles */
+.cell-hq {
+    /* Span 6 rows, 1 column */
+    grid-row: 2 / span 6;
 
-#melbourneClock {
-    /*    
-    width: 260px;
-    height: 260px;
-    */
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 10px 25px rgba(0,0,0,.15), inset 0 0 15px rgba(0,0,0,.08);
-}
+    background-color: #f0f0f0;
 
-/*.hq-clock-overlay {
-    position: absolute;
-    bottom: 12px;
+    place-items: center;
     text-align: center;
-    width: 100%;
-}
-*/
-.hq-city {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #2f3b52;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .hq-date {
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 4px;
-    text-align: center;
-}
-
-
-.cell-hq {
-    /* Span 5 rows, 1 column */
-    grid-area: 2 / 1 / 6 / 2;
-    background-color: #f0f0f0;
-    display: flex;
-    justify-content: center; /* horizontal center */
-    align-items: center; /* vertical center */
-    align-self: start; /* don't stretch within grid */
-    padding: 20px;
-    height: fit-content;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    /* font-size: 1.2em; */
 }
 
 .header,

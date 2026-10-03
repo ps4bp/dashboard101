@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <script src="dashboard.js"></script>
+    <script src="world_clock.js"></script>
+    <!-- <script src="dst_info.js"></script> -->
     <title>TX's Dashboard</title>
 </head>
 
@@ -16,11 +17,11 @@
         <div class="cell-hq">
             <div class="hq-clock-container">
 
-                <canvas id="melbourneClock" width="220" height="220"></canvas>
+                <canvas id="MelbourneClock" width="220" height="220"></canvas>
 
                 <div class="hq-date" id="currentDate"></div>
 
-            </div>          
+            </div>
         </div>
         <div class="header">Australia and New Zealand</div>
         <div class="header">Europe</div>
@@ -34,6 +35,10 @@
             <div class="city-cell">
                 <div class="city">Darwin</div>
                 <div class="time" id="DarwinClock"></div>
+            </div>
+            <div class="city-cell">
+                <div class="city">Canberra, Melbourne, Sydney</div>
+                <div class="time" id="CanberraClock"></div>
             </div>
             <div class="city-cell">
                 <div class="city">Brisbane, Gold Coast, Townsville</div>
