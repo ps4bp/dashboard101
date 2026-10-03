@@ -69,15 +69,79 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+.city-cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
 .city {
     font-weight: bold;
-    grid-row: 1;
     /* Specify that city goes in the first row */
+    grid-row: 1;
 }
 
 .time {
     font-family: monospace;
     font-size: 1.1em;
-    grid-row: 2;
     /* Specify that time goes in the second row */
+    grid-row: 2;
+}
+
+.city button {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #b0b0b0;
+    background: transparent;
+    color: #808080;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 0;
+    line-height: 1;
+
+    position: relative;
+    top: -0.5em;
+    /* move upward like superscript */
+    margin-left: 2px;
+    vertical-align: baseline;
+}
+
+.city-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.info-dialog {
+    inset: 50% auto auto 50%;
+    translate: -50% -50%;
+    margin: 0;
+}
+
+.info-dialog::backdrop {
+    background: transparent;
+    /* optional: remove modal dimming */
+}
+
+.au1Countdown,
+.au2Countdown,
+.nzCountdown {
+    display: inline-block;
+    min-width: 90px;
+    color: #0078d4;
+    font-weight: bold;
+}
+
+.auStatus,
+.nzStatus {
+    color:brown;
+}
+
+.active {
+    color: #3d813d;
+    font-weight: bold;
+}
+
+.dstChange {
+    color: rgb(136, 136, 64);
+    /* font-weight: bold; */
 }

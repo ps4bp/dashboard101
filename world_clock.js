@@ -1,6 +1,88 @@
-// Define a function to update the clock display
+const CONFIG = {
+    analogTimezone: "Australia/Melbourne",
+    refreshInterval: 1000,
+    colors: {
+        black: "#444",
+        white: "#fff"
+    }
+};
+
+const TIMEZONES = [
+    "Pacific/Auckland",
+    "Europe/London",
+    "Europe/Helsinki",
+    "Europe/Copenhagen",
+    "Australia/Perth",
+    "Australia/Darwin",
+    "Australia/Sydney",
+    "Australia/Brisbane",
+    "Australia/Adelaide",
+    "America/Vancouver",
+    "America/Denver"
+];
+
+function drawHand(ctx, angle, length, width, color) {
+    ctx.save();
+
+    ctx.rotate(angle);
+
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+
+    ctx.moveTo(0, width);
+    ctx.lineTo(0, -length);
+
+    ctx.strokeStyle = color;
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function drawClockFace(ctx, radius) {
+    ctx.beginPath();
+    ctx.arc(0, 0, radius - 4, 0, Math.PI * 2);
+
+    ctx.fillStyle = CONFIG.colors.white;
+    ctx.fill();
+
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = CONFIG.colors.black;
+    ctx.stroke();
+}
+
+function drawClockNumbers(ctx, radius) {
+    ctx.font = "bold 16px Segoe UI";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = CONFIG.colors.black;
+
+    [3, 6, 9, 12].forEach(number => {
+        const angle = (number - 3) * Math.PI / 6;
+
+        ctx.fillText(
+            number,
+            Math.cos(angle) * (radius - 18),
+            Math.sin(angle) * (radius - 18)
+        );
+    });
+}
+
+function drawCenterPin(ctx) {
+    ctx.beginPath();
+    ctx.arc(0, 0, 7, 0, Math.PI * 2);
+    ctx.fillStyle = CONFIG.colors.black;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fillStyle = CONFIG.colors.white;
+    ctx.fill();
+}
+
 function drawAnalogClock() {
-    const canvas = document.getElementById("MelbourneClock");
+    const canvas = document.getElementById("hq-clock");
+
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
@@ -10,128 +92,79 @@ function drawAnalogClock() {
     ctx.save();
     ctx.translate(radius, radius);
 
-    const MelbourneTime = new Date(
-        new Date().toLocaleString("en-US", {
-            timeZone: "Australia/Melbourne"
-        })
+    const now = new Date(new Date().toLocaleString("en-US", { timeZone: CONFIG.analogTimezone }));
+
+    const seconds =
+        now.getSeconds() +
+        now.getMilliseconds() / 1000;
+
+    const minutes =
+        now.getMinutes() +
+        seconds / 60;
+
+    const hours =
+        (now.getHours() % 12) +
+        minutes / 60;
+
+    drawClockFace(ctx, radius);
+    drawClockNumbers(ctx, radius);
+
+    drawHand(
+        ctx,
+        hours * Math.PI / 6,
+        radius * 0.5,
+        8,
+        CONFIG.colors.black
     );
 
-    // Outer bezel
-    ctx.beginPath();
-    ctx.arc(0, 0, radius - 4, 0, 2 * Math.PI);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
-    ctx.lineWidth = 6;
-    ctx.strokeStyle = "#2f3b52";
-    ctx.stroke();
+    drawHand(
+        ctx,
+        minutes * Math.PI / 30,
+        radius * 0.8,
+        5,
+        CONFIG.colors.black
+    );
 
-    // Numbers
-    ctx.font = "bold 16px Segoe UI";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#2f3b52";
-
-    for (let num = 3; num <= 12; num += 3) {
-        const ang = (num - 3) * Math.PI / 6;
-        const x = Math.cos(ang) * (radius - 18);
-        const y = Math.sin(ang) * (radius - 18);
-        ctx.fillText(num, x, y);
-    }
-
-    const second =
-        MelbourneTime.getSeconds() +
-        MelbourneTime.getMilliseconds() / 1000;
-
-    const minute =
-        MelbourneTime.getMinutes() +
-        second / 60;
-
-    const hour =
-        (MelbourneTime.getHours() % 12) +
-        minute / 60;
-
-    const hourAngle = hour * Math.PI / 6;
-    const minuteAngle = minute * Math.PI / 30;
-    //const secondAngle = second * Math.PI / 30;
-
-    // Hour hand
-    ctx.save();
-    ctx.rotate(hourAngle);
-    ctx.beginPath();
-    ctx.lineWidth = 8;
-    ctx.lineCap = "round";
-    ctx.moveTo(0, 10);
-    ctx.lineTo(0, -(radius * 0.45));
-    ctx.strokeStyle = "#2f3b52";
-    ctx.stroke();
-    ctx.restore();
-
-    // Minute hand
-    ctx.save();
-    ctx.rotate(minuteAngle);
-    ctx.beginPath();
-    ctx.lineWidth = 5;
-    ctx.lineCap = "round";
-    ctx.moveTo(0, 15);
-    ctx.lineTo(0, -(radius * 0.70));
-    ctx.strokeStyle = "#444";
-    ctx.stroke();
-    ctx.restore();
-
-    // Centre pin
-    ctx.beginPath();
-    ctx.arc(0, 0, 7, 0, 2 * Math.PI);
-    ctx.fillStyle = "#2f3b52";
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(0, 0, 3, 0, 2 * Math.PI);
-    ctx.fillStyle = "#ffffff";
-    ctx.fill();
+    drawCenterPin(ctx);
 
     ctx.restore();
 }
 
+// Helper to extract city name consistently (e.g., "Pacific/Auckland" -> "Auckland")
+const getCity = zone => zone.split("/").pop();
+
+// Cache DOM elements in a Map after DOM loads
+const cityElements = {};
+
 function updateTime() {
-    const tzList = [
-        "Pacific/Auckland",
-        "Europe/London",
-        "Europe/Helsinki",
-        "Europe/Copenhagen",
-        "Australia/Perth",
-        "Australia/Darwin",
-        "Australia/Canberra",
-        "Australia/Brisbane",
-        "Australia/Adelaide",
-        "America/Vancouver",
-        "America/Denver"
-    ];
+    const now = new Date();
 
-    const timeObj = new Date();
-    tzList.forEach(tz => {
-        const city = tz.split('/')[1];
-        const clockElement = document.getElementById(`${city}Clock`);
-        if (clockElement) {
-            clockElement.textContent = timeObj.toLocaleTimeString('en-US', {
-                timeZone: tz,
-                hour: '2-digit', minute: '2-digit',
-            });
-        }
+    TIMEZONES.forEach(zone => {
+        const element = cityElements[getCity(zone)];
+        if (!element) return;
 
+        element.textContent = now.toLocaleTimeString("en-US", {
+            timeZone: zone,
+            hour: "2-digit",
+            minute: "2-digit"
+        });
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const dateCaptionElement = document.getElementById("currentDate");
-    const today = new Date();
-    dateCaptionElement.textContent = today.toISOString().split('T')[0];
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("currentDate").textContent = new Date().toISOString().split("T")[0];
 
-    const refreshClock = () => {
+    // Map DOM elements by city and perform initial render
+    TIMEZONES.forEach(zone => {
+        const city = getCity(zone);
+        cityElements[city] = document.getElementById(`${city}Clock`);
+    });
+
+    function render() {
         updateTime();
         drawAnalogClock();
-    };
-    // Show now
-    refreshClock();
-    // then every 15 seconds
-    setInterval(refreshClock, 1000 * 15);
+    }
+
+    render();
+    setInterval(render, CONFIG.refreshInterval);
 });

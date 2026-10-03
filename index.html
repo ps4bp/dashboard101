@@ -2,80 +2,147 @@
 <html lang="en">
 
 <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.8.0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <script src="world_clock.js"></script>
-    <!-- <script src="dst_info.js"></script> -->
+    <script src="dst_info.js"></script>
     <title>TX's Dashboard</title>
 </head>
 
 <body>
     <div class="grid-container">
-
-        <div class="header">Melbourne</div>
+        <div class="header">
+            Melbourne
+        </div>
         <div class="cell-hq">
             <div class="hq-clock-container">
-
-                <canvas id="MelbourneClock" width="220" height="220"></canvas>
-
+                <canvas id="hq-clock" width="220" height="220">
+                </canvas>
                 <div class="hq-date" id="currentDate"></div>
-
             </div>
         </div>
-        <div class="header">Australia and New Zealand</div>
-        <div class="header">Europe</div>
-        <div class="header">Canada and the US</div>
-
+        <div class="header">
+            Australia and New Zealand
+        </div>
+        <div class="header">
+            Europe
+        </div>
+        <div class="header">
+            Canada and the US
+        </div>
         <div class="region">
             <div class="city-cell">
-                <div class="city">Perth</div>
+                <div class="city">
+                    Perth
+                </div>
                 <div class="time" id="PerthClock"></div>
             </div>
             <div class="city-cell">
-                <div class="city">Darwin</div>
+                <div class="city">
+                    Darwin
+                </div>
                 <div class="time" id="DarwinClock"></div>
             </div>
             <div class="city-cell">
-                <div class="city">Canberra, Melbourne, Sydney</div>
-                <div class="time" id="CanberraClock"></div>
+                <div class="city-wrapper">
+                    <div class="city">
+                        Canberra, Hobart, Melbourne, Sydney<button command="show-modal" commandfor="dialogAU1">i</button>
+                    </div>
+                    <dialog id="dialogAU1" class="info-dialog">
+                        DST starts on the first Sunday of October and ends on the first Sunday of April.
+                        <button command="close" commandfor="dialogAU1">OK</button>
+                    </dialog>
+                    <details>
+                        <summary>
+                            <span class="time" id="SydneyClock"></span>
+                        </summary>
+                        <div class="auStatus"></div>
+                        <div class="auLastChange dstChange"></div>
+                        <div class="auNextChange dstChange"></div>
+                        <span class="au1Countdown"></span>
+                    </details>
+                </div>
             </div>
             <div class="city-cell">
-                <div class="city">Brisbane, Gold Coast, Townsville</div>
+                <div class="city">
+                    Brisbane, Gold Coast, Townsville
+                </div>
                 <div class="time" id="BrisbaneClock"></div>
             </div>
             <div class="city-cell">
-                <div class="city">Adelaide</div>
-                <div class="time" id="AdelaideClock"></div>
+                <div class="city-wrapper">
+                    <div class="city">
+                        Adelaide<button command="show-modal" commandfor="dialogAU2">i</button>
+                    </div>
+                    <dialog id="dialogAU2" class="info-dialog">
+                        DST starts on the first Sunday of October and ends on the first Sunday of April.
+                        <button command="close" commandfor="dialogAU2">OK</button>
+                    </dialog>
+                    <details>
+                        <summary>
+                            <span class="time" id="AdelaideClock"></span>
+                        </summary>
+                        <div class="auStatus"></div>
+                        <div class="auLastChange dstChange"></div>
+                        <div class="auNextChange dstChange"></div>
+                        <span class="au2Countdown"></span>
+                    </details>
+                </div>
             </div>
             <div class="city-cell">
-                <div class="city">Auckland, Wellington</div>
-                <div class="time" id="AucklandClock"></div>
+                <div class="city-wrapper">
+                    <div class="city">
+                        Auckland, Wellington<button command="show-modal" commandfor="dialogNZ">i</button>
+                    </div>
+                    <dialog id="dialogNZ" class="info-dialog">
+                        DST starts on the last Sunday of September and ends on the first Sunday of April.
+                        <button command="close" commandfor="dialogNZ">OK</button>
+                    </dialog>
+                    <details>
+                        <summary>
+                            <span class="time" id="AucklandClock"></span>
+                        </summary>
+                        <div id="nzStatus"></div>
+                        <div id="nzLastChange" class="dstChange"></div>
+                        <div id="nzNextChange" class="dstChange"></div>
+                        <span class="nzCountdown"></span>
+                    </details>
+                </div>
             </div>
         </div>
-
         <div class="region">
             <div class="city-cell" title="Adam Prosser, Neil Whitehead">
-                <div class="city">Cambridge, Manchester</div>
+                <div class="city">
+                    Cambridge, Manchester
+                </div>
                 <div class="time" id="LondonClock"></div>
             </div>
             <div class="city-cell">
-                <div class="city">Copenhagen</div>
+                <div class="city">
+                    Copenhagen
+                </div>
                 <div class="time" id="CopenhagenClock"></div>
             </div>
             <div class="city-cell">
-                <div class="city">Helsinki</div>
+                <div class="city">
+                    Helsinki
+                </div>
                 <div class="time" id="HelsinkiClock"></div>
             </div>
         </div>
-
         <div class="region">
             <div class="city-cell" title="Harjit Kainth, Jennifer Chen, Shawn Norman">
-                <div class="city">Portland, Vancouver</div>
+                <div class="city">
+                    Portland, Vancouver
+                </div>
                 <div class="time" id="VancouverClock"></div>
             </div>
             <div class="city-cell" title="Todd Zmetana">
-                <div class="city">Calgary, Denver</div>
+                <div class="city">
+                    Calgary, Denver
+                </div>
                 <div class="time" id="DenverClock"></div>
             </div>
         </div>
