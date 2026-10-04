@@ -7,8 +7,7 @@
 
 /* Global Styles */
 body {
-    font-family: Arial, sans-serif;
-    /* background-color: #f9f9f9; */
+    font-family: "Segoe UI", sans-serif;
 }
 
 /* Grid Layout */
@@ -25,12 +24,10 @@ body {
     /* Span 6 rows, 1 column */
     grid-row: 2 / span 6;
 
-    background-color: #f0f0f0;
-
     place-items: center;
     text-align: center;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* border-radius: 8px; */
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
 }
 
 .hq-date {
@@ -40,18 +37,18 @@ body {
 
 .header,
 .city-cell {
-    background-color: #f0f0f0;
+    background: #ffffff00;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     padding: 10px;
     text-align: center;
     border-radius: 4px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .header {
     border-bottom: 2px solid #999;
     font-weight: bold;
     font-size: 1.2em;
-    /* text-transform: uppercase; */
 }
 
 /* City Cell Styles */
@@ -70,31 +67,29 @@ body {
 }
 
 .city-cell:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    /* transform: translateY(-2px); */
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); */
+    background: #fafafa;
 }
 
 .city {
-    font-weight: bold;
-    /* Specify that city goes in the first row */
-    grid-row: 1;
+    font-size: 0.95rem;
+    font-weight: 600;
 }
 
 .time {
-    font-family: monospace;
-    font-size: 1.1em;
-    /* Specify that time goes in the second row */
-    grid-row: 2;
+    /* font-size: 1.1rem; */
+    font-weight: 700;
 }
 
 .city button {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     border: 1px solid #b0b0b0;
     background: transparent;
     color: #808080;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: bold;
     padding: 0;
     line-height: 1;
@@ -119,7 +114,6 @@ body {
 
 .info-dialog::backdrop {
     background: transparent;
-    /* optional: remove modal dimming */
 }
 
 .au1Countdown,
@@ -128,17 +122,17 @@ body {
     display: inline-block;
     min-width: 90px;
     color: #0078d4;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .auStatus,
 .nzStatus {
-    color:brown;
+    color: brown;
 }
 
 .active {
     color: #3d813d;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .dstChange {

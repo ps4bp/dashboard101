@@ -113,10 +113,9 @@ function updateCountdown(targetDate, tz) {
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-    document.querySelectorAll(`.${className}`)
-        .forEach(el => {
-            el.textContent = `Countdown to next change: ${days}d ${hours}h ${minutes}m`;
-        });
+    document.querySelectorAll(`.${className}`).forEach(el => {
+        el.textContent = `Countdown to next change: ${days}d ${hours}h ${minutes}m`;
+    });
 
 }
 
@@ -139,16 +138,12 @@ document.addEventListener("DOMContentLoaded", () => {
         el.textContent = `DST: ${au.isDST}`;
         el.classList.toggle("active", au.isDST);
     });
-    document.querySelectorAll(".auLastChange")
-        .forEach(el =>
-            el.textContent =
-            `${au.lastEvent}ed: ${formatDate(au.lastChange)}`
-        );
-    document.querySelectorAll(".auNextChange")
-        .forEach(el =>
-            el.textContent =
-            `${au.nextEvent}s on ${formatDate(au.nextChange)}`
-        );
+    document.querySelectorAll(".auLastChange").forEach(el =>
+        el.textContent = `${au.lastEvent}ed: ${formatDate(au.lastChange)}`
+    );
+    document.querySelectorAll(".auNextChange").forEach(el =>
+        el.textContent = `${au.nextEvent}s on ${formatDate(au.nextChange)}`
+    );
 
     refreshCountdowns();
     setInterval(refreshCountdowns, 60000);
