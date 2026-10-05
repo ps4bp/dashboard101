@@ -1,30 +1,45 @@
+/**
+ * DST information and countdown for Australia & New Zealand
+ *
+ * Rules (Southern Hemisphere):
+ *   NZ  – starts last Sunday of September, ends first Sunday of April
+ *   AU  – starts first Sunday of October,  ends first Sunday of April
+ */
+
+// ---------------------------------------------------------------------------
+// Date helpers – find the relevant Sundays
+// ---------------------------------------------------------------------------
 function firstSundayOfApril(year) {
     const d = new Date(year, 3, 1); // Apr 1
-
     d.setDate(d.getDate() + ((7 - d.getDay()) % 7));
-    d.setHours(3, 0, 0, -1); // Set time to 3:00 AM
-
+    d.setHours(3, 0, 0, -1); // just before 3 am
     return d;
 }
 
 function lastSundayOfSeptember(year) {
     const d = new Date(year, 8, 30); // Sep 30
-
     d.setDate(d.getDate() - d.getDay());
-    d.setHours(2, 0, 0, -1); // Set time to 2:00 AM
-
+    d.setHours(2, 0, 0, -1); // just before 2 am
     return d;
 }
 
 function firstSundayOfOctober(year) {
-    const d = new Date(year, 9, 1); // Oct 1
-
-    d.setDate(d.getDate() + ((7 - d.getDay()) % 7));
-    d.setHours(2, 0, 0, -1); // Set time to 2:00 AM
-
+    // Always the Sunday after last Sunday of September
+    const d = lastSundayOfSeptember(year);
+    d.setDate(d.getDate() + 7);
     return d;
 }
 
+// ---------------------------------------------------------------------------
+// Core DST calculation
+// ---------------------------------------------------------------------------
+
+/**
+ * Calculate current DST state and the surrounding transition points.
+ *
+ * @param {function(number): Date} startFn  – returns DST start for a given year
+ * @param {function(number): Date} endFn    – returns DST end for a given year
+ */
 function getDSTDetails(startFn, endFn) {
     const now = new Date();
     const year = now.getFullYear();
@@ -32,55 +47,45 @@ function getDSTDetails(startFn, endFn) {
     const startThisYear = startFn(year);
     const endThisYear = endFn(year);
 
-    let isDST;
-    let lastChange;
-    let nextChange;
-    let lastEvent;
-    let nextEvent;
-
-    // Period 1: Late in current year (Oct - Dec) -> DST active
+    // After the start of DST this year → currently in DST
     if (now >= startThisYear) {
-        isDST = true;
-        lastChange = startThisYear;
-        lastEvent = "Start";
-        nextChange = endFn(year + 1);
-        nextEvent = "End";
-    }
-    // Period 2: Early in current year (Jan - Apr) -> DST active
-    else if (now < endThisYear) {
-        isDST = true;
-        lastChange = startFn(year - 1);
-        lastEvent = "Start";
-        nextChange = endThisYear;
-        nextEvent = "End";
-    }
-    // Period 3: Middle of year (Apr - Oct) -> Standard Time
-    else {
-        isDST = false;
-        lastChange = endThisYear;
-        lastEvent = "End";
-        nextChange = startThisYear;
-        nextEvent = "Start";
+        return {
+            isDST: true,
+            lastChange: startThisYear,
+            lastEvent: "Start",
+            nextChange: endFn(year + 1),
+            nextEvent: "End"
+        };
     }
 
+    // Before the end of DST this year → still in DST (from previous year)
+    if (now < endThisYear) {
+        return {
+            isDST: true,
+            lastChange: startFn(year - 1),
+            lastEvent: "Start",
+            nextChange: endThisYear,
+            nextEvent: "End"
+        };
+    }
+
+    // Between end and next start → standard time
     return {
-        isDST,
-        lastChange,
-        lastEvent,
-        nextChange,
-        nextEvent
+        isDST: false,
+        lastChange: endThisYear,
+        lastEvent: "End",
+        nextChange: startThisYear,
+        nextEvent: "Start"
     };
 }
 
-const nz = getDSTDetails(
-    lastSundayOfSeptember,
-    firstSundayOfApril
-);
+// Pre-compute once at load time
+const nz = getDSTDetails(lastSundayOfSeptember, firstSundayOfApril);
+const au = getDSTDetails(firstSundayOfOctober, firstSundayOfApril);
 
-const au = getDSTDetails(
-    firstSundayOfOctober,
-    firstSundayOfApril
-);
+// ---------------------------------------------------------------------------
+// Formatting & countdown
+// ---------------------------------------------------------------------------
 
 function formatDate(date) {
     return date.toLocaleDateString("en-US", {
@@ -92,59 +97,99 @@ function formatDate(date) {
     });
 }
 
-function updateCountdown(targetDate, tz) {
-    const className = {
-        "Australia/Adelaide": "au2Countdown",
-        "Australia/Sydney": "au1Countdown",
-        "Pacific/Auckland": "nzCountdown"
-    }[tz];
-    if (!className) return;
+/** Return a Date whose local components match the current wall time in `tz`. */
+function nowInTimezone(tz) {
+    return new Date(new Date().toLocaleString("en-US", { timeZone: tz }));
+}
 
-    const now = new Date(
-        new Date().toLocaleString("en-US", { timeZone: tz })
-    );
+function formatCountdown(targetDate, tz) {
+    const now = nowInTimezone(tz);
     const diff = targetDate - now;
+
     if (diff <= 0) {
-        element.textContent = "Time change is occurring now";
-        return;
+        return "Time change is occurring now";
     }
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-    document.querySelectorAll(`.${className}`).forEach(el => {
-        el.textContent = `Countdown to next change: ${days}d ${hours}h ${minutes}m`;
-    });
-
+    return `Countdown to next change: ${days}d ${hours}h ${minutes}m`;
 }
+
+const COUNTDOWN_TARGETS = [
+    { nextChange: nz.nextChange, tz: "Pacific/Auckland", selector: ".nzCountdown" },
+    { nextChange: au.nextChange, tz: "Australia/Sydney", selector: ".au1Countdown" },
+    { nextChange: au.nextChange, tz: "Australia/Adelaide", selector: ".au2Countdown" }
+];
 
 function refreshCountdowns() {
-    updateCountdown(nz.nextChange, "Pacific/Auckland");
-    updateCountdown(au.nextChange, "Australia/Sydney");
-    updateCountdown(au.nextChange, "Australia/Adelaide");
+    COUNTDOWN_TARGETS.forEach(({ nextChange, tz, selector }) => {
+        const text = formatCountdown(nextChange, tz);
+        document.querySelectorAll(selector).forEach(el => {
+            el.textContent = text;
+        });
+    });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    let status;
+// ---------------------------------------------------------------------------
+// DOM updates
+// ---------------------------------------------------------------------------
 
-    status = document.getElementById("nzStatus");
-    status.textContent = `DST: ${nz.isDST}`;
-    status.classList.toggle("active", nz.isDST);
-    document.getElementById("nzLastChange").textContent = `${nz.lastEvent}ed: ${formatDate(nz.lastChange)}`;
-    document.getElementById("nzNextChange").textContent = `${nz.nextEvent}s on ${formatDate(nz.nextChange)}`;
+function setStatus(element, isDST) {
+    if (!element) return;
+    element.textContent = `DST: ${isDST}`;
+    element.classList.toggle("active", isDST);
+}
 
-    document.querySelectorAll(".auStatus").forEach(el => {
-        el.textContent = `DST: ${au.isDST}`;
-        el.classList.toggle("active", au.isDST);
+function setChangeText(elements, event, date) {
+    const text = `${event}ed: ${formatDate(date)}`;
+    elements.forEach(el => {
+        el.textContent = text;
     });
-    document.querySelectorAll(".auLastChange").forEach(el =>
-        el.textContent = `${au.lastEvent}ed: ${formatDate(au.lastChange)}`
+}
+
+function setNextText(elements, event, date) {
+    const text = `${event}s on ${formatDate(date)}`;
+    elements.forEach(el => {
+        el.textContent = text;
+    });
+}
+
+function updateDSTUI() {
+    // New Zealand
+    setStatus(document.getElementById("nzStatus"), nz.isDST);
+    setChangeText(
+        [document.getElementById("nzLastChange")].filter(Boolean),
+        nz.lastEvent,
+        nz.lastChange
     );
-    document.querySelectorAll(".auNextChange").forEach(el =>
-        el.textContent = `${au.nextEvent}s on ${formatDate(au.nextChange)}`
+    setNextText(
+        [document.getElementById("nzNextChange")].filter(Boolean),
+        nz.nextEvent,
+        nz.nextChange
     );
 
+    // Australia
+    document.querySelectorAll(".auStatus").forEach(el => setStatus(el, au.isDST));
+    setChangeText(
+        document.querySelectorAll(".auLastChange"),
+        au.lastEvent,
+        au.lastChange
+    );
+    setNextText(
+        document.querySelectorAll(".auNextChange"),
+        au.nextEvent,
+        au.nextChange
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Bootstrap
+// ---------------------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateDSTUI();
     refreshCountdowns();
-    setInterval(refreshCountdowns, 60000);
+    setInterval(refreshCountdowns, 60_000);
 });
